@@ -1,0 +1,58 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: "3000"
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:?Set the Supabase project URL in .env}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:?Set the Supabase anon key in .env}
+      SOLVER_API_URL: http://solver-api:8000
+      SOLVER_API_KEY: ${SOLVER_API_KEY:?Set a strong shared solver API key in .env}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      solver-api:
+        condition: service_healthy
+  solver-api:
+    build:
+      context: .
+      dockerfile: solver/Dockerfile
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      SOLVER_API_KEY: ${SOLVER_API_KEY:?Set a strong shared solver API key in .env}
+    expose:
+      - "8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  solver-worker:
+    build:
+      context: .
+      dockerfile: solver/Dockerfile
+    command: ["python", "-m", "app.worker"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - solver-queue:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  solver-queue:

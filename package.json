@@ -1,0 +1,12 @@
+{
+  "name": "rgit-timetable-management",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "pnpm --filter @rgit/timetable-web dev",
+    "build": "pnpm --filter @rgit/timetable-web build",
+    "typecheck": "pnpm --filter @rgit/timetable-web typecheck",
+    "test": "pnpm --filter @rgit/timetable-web test"
+  }
+}

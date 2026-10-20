@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"Home"},{"path":"/login/:role","title":"Role sign in"},{"path":"/workspace/:role","title":"Role workspace"}]}

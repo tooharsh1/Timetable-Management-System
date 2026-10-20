@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+.next/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+frontend/.env.local
+solver/.env
+.DS_Store
+*.zip

@@ -1,0 +1,13 @@
+{
+  "include": ["solver"],
+  "executionEnvironments": [
+    {
+      "root": "solver",
+      "extraPaths": ["solver"]
+    }
+  ],
+  "pythonVersion": "3.12",
+  "venvPath": "solver",
+  "venv": ".venv",
+  "typeCheckingMode": "basic"
+}
